@@ -1,5 +1,6 @@
 import socket
 import os
+import mimetypes
 
 HOST = "127.0.0.1"
 PORT = 9000
@@ -38,11 +39,8 @@ with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s:
             filePath = f".{headers['path']}"
             if os.path.exists(filePath):
                 ext = headers["path"].split(".")[-1]
-                contType = f"text/{ext}"
-
-                if ext == "json":
-                    contType = "application/json"
-
+                mime = mimetypes.guess_type(filePath)[0]
+                contType = mime if mime else "text/plain"
                 with open(filePath,"r") as f:
                     resp = f.read()
         else:
